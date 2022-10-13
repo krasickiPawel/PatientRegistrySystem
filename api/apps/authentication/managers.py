@@ -1,5 +1,4 @@
 from django.contrib.auth.base_user import BaseUserManager
-from .models import User
 
 
 class UserManager(BaseUserManager):
@@ -25,7 +24,7 @@ class UserManager(BaseUserManager):
             user = self.create_user(email, password)
             user.is_superuser = True
             user.is_staff = True
-            user.type = User.UserType.ADMIN
+            user.UserType = user.UserType.PATIENT
             user.save(using=self._db)
             return user
 

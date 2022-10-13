@@ -1,6 +1,10 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from .managers import UserManager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -23,9 +27,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=63, blank=True, null=True)
     last_name = models.CharField(max_length=63, blank=True, null=True)
 
+    USERNAME_FIELD = "email"
+
+    objects = UserManager()
+
     def __str__(self):
         return self.email
 
     @property
     def username(self):
         return self.first_name + " " + self.last_name or self.email.split("@")[0]
+
+
+@receiver(post_save, sender=User)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
