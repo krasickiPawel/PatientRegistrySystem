@@ -1,0 +1,14 @@
+# configuration for black
+[tool.black]
+line-length = 100
+extend-exclude = '''
+(
+  \wsgi.py
+  | \asgi.py
+  | authentication/migrations/
+  | core/migrations/
+)
+'''
+
+# [black usage]:
+# black api --config pyproject.toml
