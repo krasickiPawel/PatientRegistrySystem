@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,6 +34,8 @@ ALLOWED_HOSTS = [
     # TODO: add to domain on prod
 ]
 
+# User model
+AUTH_USER_MODEL = "authentication.User"
 
 # Application definition
 
@@ -46,8 +49,24 @@ INSTALLED_APPS = [
     # APPS
     "api.apps.authentication",
     "api.apps.core",
-    # TODO: add simplejwt
+    # AUTH
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    # DEV
+    "django_extensions",
 ]
+
+# JWT CONFIG
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",)
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -59,7 +78,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "PatientRegistrySystem.urls"
 ROOT_URLCONF = "api.urls"
 
 TEMPLATES = [
